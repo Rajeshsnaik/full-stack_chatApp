@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  namespace: chat-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      name: mongodb-pod
+      namespace: chat-app
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: chatapp-mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "password"
+            # - name: MONGO_INITDB_DATABASE
+            #   value: "chat-app"
+            # - name: MONGO_URI
+            #   value: "mongodb://mongo-service:27017/chat-app"
+            # - name: JWT_SECRET
+            #   value: "your_jwt_secret_key"
+            # - name: PORT
+            #   value: "27017"
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
